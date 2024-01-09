@@ -1,0 +1,29 @@
+Button {
+    width: 1fr;
+    margin: 1 1;
+    text-style: bold;
+}
+Button#deal, Button#paste {
+    tint: #27ae60 60%;
+}
+Button#reset {
+    tint: #c0392b 60%;
+}
+Label {
+    width: 100%;
+    content-align-horizontal: center;
+    content-align-vertical: middle;
+    text-style: bold;
+}
+Label#prompt {
+    padding: 1;
+}
+Bar {
+    width: 33vw;
+}
+Bar > .bar--indeterminate {
+    color: #7bed9f;
+}
+Bar > .bar--complete {
+    color: #ff7f50;
+}
