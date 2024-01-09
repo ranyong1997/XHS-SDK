@@ -34,6 +34,7 @@ USERSCRIPT = "https://raw.githubusercontent.com/JoeanAmier/XHS-Downloader/master
 USERAGENT = (
     "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 "
     "Safari/537.36")
+# cookie失效会导致下载不成功，建议用测试号
 COOKIE = (
     "abRequestId=54c534bb-a2c6-558f-8e03-5b4c5c45635c; xsecappid=xhs-pc-web; a1=18c286a400"
     "4jy56qvzejvp631col0hd3032h4zjez50000106381; webId=779c977da3a15b5623015be94bdcc9e9; g"
