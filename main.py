@@ -14,7 +14,7 @@ async def main():
     multiple_links = f"{demo_link} {demo_link1} {demo_link2} {demo_link3} {demo_link4}"
     # 实例对象
     work_path = "G:\\"  # 作品数据/文件保存根路径，默认值：项目根路径
-    folder_name = "Download"  # 作品文件储存文件夹名称（自动创建），默认值：Download
+    folder_name = ""  # 作品文件储存文件夹名称（自动创建），默认值：Download
     user_agent = ""  # 请求头 User-Agent
     cookie = ""  # 小红书网页版 Cookie，无需登录
     proxy = None  # 网络代理
