@@ -12,7 +12,7 @@ __all__ = ['Download']
 
 class Download:
 
-    def __init__(self, manager: Manager, ):
+    def __init__(self, manager: Manager):
         self.manager = manager
         self.folder = manager.folder
         self.temp = manager.temp
@@ -53,21 +53,14 @@ class Download:
                 if self.manager.is_exists(file):
                     logging(log, self.prompt.skip_download(name))
                     return True
-                # self.__create_progress(
-                #     bar, int(
-                #         response.headers.get(
-                #             'content-length', 0)) or None)
                 with temp.open("wb") as f:
                     async for chunk in response.content.iter_chunked(self.chunk):
                         f.write(chunk)
-                        # self.__update_progress(bar, len(chunk))
             self.manager.move(temp, file)
-            # self.__create_progress(bar, None)
             logging(log, self.prompt.download_success(name))
             return True
         except ClientError as error:
             self.manager.delete(temp)
-            # self.__create_progress(bar, None)
             logging(log, error, ERROR)
             logging(log, self.prompt.download_error(name), ERROR)
             return False
