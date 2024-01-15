@@ -1,8 +1,6 @@
 from asyncio import run
 from source import XHS
 
-csv_file = None
-
 
 async def main():
     """通过代码设置参数，适合二次开发"""
@@ -25,8 +23,8 @@ async def main():
     record_data = True  # 是否记录作品数据至文件
     image_format = "PNG"  # 图文作品文件下载格式，支持：PNG、WEBP
     folder_mode = True  # 是否将每个作品的文件储存至单独的文件夹
-    async with XHS() as xhs:
-        pass  # 使用默认参数
+    # async with XHS() as xhs:
+    #     pass  # 使用默认参数
     async with XHS(
             work_path=work_path,
             folder_name=folder_name,

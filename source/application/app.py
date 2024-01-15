@@ -24,11 +24,13 @@ __all__ = ["XHS"]
 
 
 class XHS:
+    # 用于匹配小红书的不同类型链接
     LINK = compile(r"https?://www\.xiaohongshu\.com/explore/[a-z0-9]+")
     SHARE = compile(r"https?://www\.xiaohongshu\.com/discovery/item/[a-z0-9]+")
     SHORT = compile(r"https?://xhslink\.com/[A-Za-z0-9]+")
     __INSTANCE = None
 
+    # 确保只有一个实例存在
     def __new__(cls, *args, **kwargs):
         if not cls.__INSTANCE:
             cls.__INSTANCE = super().__new__(cls)
@@ -74,13 +76,22 @@ class XHS:
         self.download = Download(self.manager)
 
     def __extract_image(self, container: dict, data: Namespace):
+        """
+        提取图片
+        """
         container["下载地址"] = self.image.get_image_link(
             data, self.manager.image_format)
 
     def __extract_video(self, container: dict, data: Namespace):
+        """
+        提取视频
+        """
         container["下载地址"] = self.video.get_video_link(data)
 
     async def __download_files(self, container: dict, download: bool, log, bar):
+        """
+        下载文件
+        """
         name = self.__naming_rules(container)
         path = self.manager.folder
         if (u := container["下载地址"]) and download:
@@ -90,6 +101,9 @@ class XHS:
         self.manager.save_data(path, name, container)
 
     async def extract(self, url: str, download=False, log=None, bar=None) -> list[dict]:
+        """
+        用于提取链接
+        """
         # return  # 调试代码
         urls = await self.__extract_links(url, log)
         if not urls:
@@ -112,6 +126,9 @@ class XHS:
         return urls
 
     async def __deal_extract(self, url: str, download: bool, log, bar):
+        """
+        提取内容，包括下载和日志记录
+        """
         logging(log, self.prompt.start_processing(url))
         html = await self.html.request_url(url, log=log)
         namespace = self.__generate_data_object(html)
@@ -134,13 +151,19 @@ class XHS:
         return data
 
     def __generate_data_object(self, html: str) -> Namespace:
+        """
+        用户生成数据对象
+        """
         data = self.convert.run(html)
         return Namespace(data)
 
     def __naming_rules(self, data: dict) -> str:
-        """下载文件默认使用 作品标题 或 作品 ID 作为文件名称，可修改此方法自定义文件名称格式"""
+        """
+        下载文件默认使用 作品标题 或 作品 ID 作为文件名称，可修改此方法自定义文件名称格式
+        """
         return self.manager.filter_name(data["作品标题"]) or data["作品ID"]
 
+    # 上下文管理器和关闭方法
     async def __aenter__(self):
         return self
 
