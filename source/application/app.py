@@ -96,7 +96,7 @@ class XHS:
             logging(log, self.prompt.extract_link_failure, WARNING)
         else:
             logging(log, self.prompt.pending_processing(len(urls)))
-        # return urls  # 调试代码
+        # return url  # 调试代码
         return [await self.__deal_extract(i, download, log, bar) for i in urls]
 
     async def __extract_links(self, url: str, log) -> list:
