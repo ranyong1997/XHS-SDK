@@ -1,6 +1,5 @@
 from asyncio import run
 from source import XHS
-from source.utils import CsvGen
 
 csv_file = None
 
@@ -8,11 +7,11 @@ csv_file = None
 async def main():
     """通过代码设置参数，适合二次开发"""
     # 示例链接
-    link = "https://www.xiaohongshu.com/explore/659b9550000000001303768b"
-    link1 = "https://www.xiaohongshu.com/explore/6568961e0000000032033090"
-    link2 = "https://www.xiaohongshu.com/explore/659b9550000000001303768b"
-    link3 = "https://www.xiaohongshu.com/explore/659b9550000000001303768b"
-    link4 = "https://www.xiaohongshu.com/explore/616eb1fe00000000210357b7"
+    link = ""
+    link1 = ""
+    link2 = ""
+    link3 = ""
+    link4 = ""
     multiple_links = f"{link} {link1} {link2} {link3} {link4}"
     # 实例对象
     work_path = "G:\\"  # 作品数据/文件保存根路径，默认值：项目根路径
@@ -43,8 +42,7 @@ async def main():
     ) as xhs:  # 使用自定义参数
         download = True  # 是否下载作品文件，默认值：False
         # 返回作品详细信息，包括下载地址
-        print(await xhs.extract(link, download))    # 下载单个作品
-        # print(await xhs.extract(multiple_links, download))  # 支持传入多个作品链接
+        print(await xhs.extract(link, download))  # 下载单个作品
         # print(await xhs.extract(multiple_links, download))  # 支持传入多个作品链接
 
 
