@@ -5,7 +5,7 @@ from source import XHS
 async def main():
     """通过代码设置参数，适合二次开发"""
     # 示例链接
-    link = "https://www.xiaohongshu.com/explore/6586e9d0000000000801e9aa"
+    link = "https://www.xiaohongshu.com/explore/65b114f5000000001100dcd5"
     link1 = ""
     link2 = ""
     link3 = ""
