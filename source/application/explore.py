@@ -25,8 +25,7 @@ class Explore:
     @staticmethod
     def __extract_interact_info(container: dict, data: Namespace) -> None:
         container["收藏数量"] = data.safe_extract(
-            "interactInfo.collectedCount", -1
-        )
+            "interactInfo.collectedCount", -1)
         container["评论数量"] = data.safe_extract("interactInfo.commentCount", -1)
         container["分享数量"] = data.safe_extract("interactInfo.shareCount", -1)
         container["点赞数量"] = data.safe_extract("interactInfo.likedCount", -1)
@@ -41,22 +40,19 @@ class Explore:
         container["作品标题"] = data.safe_extract("title")
         container["作品描述"] = data.safe_extract("desc")
         container["作品类型"] = self.explore_type.get(
-            data.safe_extract("type"), "未知"
-        )
+            data.safe_extract("type"), "未知")
         container["IP归属地"] = data.safe_extract("ipLocation")
 
     def __extract_time(self, container: dict, data: Namespace):
         container["发布时间"] = datetime.fromtimestamp(
-            time / 1000
-        ).strftime(
-            self.time_format
-        ) if (
+            time /
+            1000).strftime(
+            self.time_format) if (
             time := data.safe_extract("time")) else "未知"
         container["最后更新时间"] = datetime.fromtimestamp(
-            last / 1000
-        ).strftime(
-            self.time_format
-        ) if (
+            last /
+            1000).strftime(
+            self.time_format) if (
             last := data.safe_extract("lastUpdateTime")) else "未知"
 
     @staticmethod

@@ -63,6 +63,7 @@ class Namespace:
             attribute_chain,
             default, )
 
+    @property
     def __dict__(self):
         return self.convert_to_dict(self.data)
 
@@ -71,8 +72,7 @@ class Namespace:
         return {
             key: cls.convert_to_dict(value) if isinstance(
                 value,
-                SimpleNamespace
-            ) else value for key,
+                SimpleNamespace) else value for key,
             value in vars(data).items()}
 
     def __bool__(self):

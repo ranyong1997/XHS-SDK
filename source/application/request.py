@@ -21,15 +21,19 @@ class Html:
             url: str,
             content=True,
             log=None,
+            **kwargs,
     ) -> str:
         try:
             async with self.session.get(
                     url,
                     proxy=self.proxy,
+                    **kwargs,
             ) as response:
+                if response.status != 200:
+                    return ""
                 return await response.text() if content else str(response.url)
         except ClientError as error:
-            logging(log, error, ERROR)
+            logging(log, str(error), ERROR)
             logging(log, self.prompt.request_error(url), ERROR)
             return ""
 

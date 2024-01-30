@@ -9,28 +9,27 @@ from source.module import (
     WARNING,
 )
 from source.module import logging
+from source.module import wait
 from source.translator import (
     LANGUAGE,
     Chinese,
     English,
 )
-from .Downloader import Download
-from .Explore import Explore
-from .Html import Html
-from .Image import Image
-from .Video import Video
+from .download import Download
+from .explore import Explore
+from .image import Image
+from .request import Html
+from .video import Video
 
 __all__ = ["XHS"]
 
 
 class XHS:
-    # 用于匹配小红书的不同类型链接
     LINK = compile(r"https?://www\.xiaohongshu\.com/explore/[a-z0-9]+")
     SHARE = compile(r"https?://www\.xiaohongshu\.com/discovery/item/[a-z0-9]+")
     SHORT = compile(r"https?://xhslink\.com/[A-Za-z0-9]+")
     __INSTANCE = None
 
-    # 确保只有一个实例存在
     def __new__(cls, *args, **kwargs):
         if not cls.__INSTANCE:
             cls.__INSTANCE = super().__new__(cls)
@@ -76,22 +75,13 @@ class XHS:
         self.download = Download(self.manager)
 
     def __extract_image(self, container: dict, data: Namespace):
-        """
-        提取图片
-        """
         container["下载地址"] = self.image.get_image_link(
             data, self.manager.image_format)
 
     def __extract_video(self, container: dict, data: Namespace):
-        """
-        提取视频
-        """
         container["下载地址"] = self.video.get_video_link(data)
 
     async def __download_files(self, container: dict, download: bool, log, bar):
-        """
-        下载文件
-        """
         name = self.__naming_rules(container)
         path = self.manager.folder
         if (u := container["下载地址"]) and download:
@@ -100,18 +90,15 @@ class XHS:
             logging(log, self.prompt.download_link_error, ERROR)
         self.manager.save_data(path, name, container)
 
-    async def extract(self, url: str, download=False, log=None, bar=None) -> list[dict]:
-        """
-        用于提取链接
-        """
+    async def extract(self, url: str, download=False, efficient=False, log=None, bar=None) -> list[dict]:
         # return  # 调试代码
         urls = await self.__extract_links(url, log)
         if not urls:
             logging(log, self.prompt.extract_link_failure, WARNING)
         else:
             logging(log, self.prompt.pending_processing(len(urls)))
-        # return url  # 调试代码
-        return [await self.__deal_extract(i, download, log, bar) for i in urls]
+        # return urls  # 调试代码
+        return [await self.__deal_extract(i, download, efficient, log, bar) for i in urls]
 
     async def __extract_links(self, url: str, log) -> list:
         urls = []
@@ -125,17 +112,16 @@ class XHS:
                 urls.append(u.group())
         return urls
 
-    async def __deal_extract(self, url: str, download: bool, log, bar):
-        """
-        提取内容，包括下载和日志记录
-        """
+    async def __deal_extract(self, url: str, download: bool, efficient: bool, log, bar):
         logging(log, self.prompt.start_processing(url))
         html = await self.html.request_url(url, log=log)
         namespace = self.__generate_data_object(html)
         if not namespace:
             logging(log, self.prompt.get_data_failure(url), ERROR)
             return {}
+        await self.__suspend(efficient)
         data = self.explore.run(namespace)
+        # logging(log, data)  # 调试代码
         if not data:
             logging(log, self.prompt.extract_data_failure(url), ERROR)
             return {}
@@ -151,19 +137,21 @@ class XHS:
         return data
 
     def __generate_data_object(self, html: str) -> Namespace:
-        """
-        用户生成数据对象
-        """
         data = self.convert.run(html)
         return Namespace(data)
 
     def __naming_rules(self, data: dict) -> str:
-        """
-        下载文件默认使用 作品标题 或 作品 ID 作为文件名称，可修改此方法自定义文件名称格式
-        """
-        return self.manager.filter_name(data["作品标题"]) or data["作品ID"]
+        """下载文件默认使用 作品标题 或 作品 ID 作为文件名称，可修改此方法自定义文件名称格式"""
+        author = self.manager.filter_name(data["作者昵称"]) or data["作者ID"]
+        title = self.manager.filter_name(data["作品标题"]) or data["作品ID"]
+        return f"{author}-{title}"
 
-    # 上下文管理器和关闭方法
+    @staticmethod
+    async def __suspend(efficient: bool) -> None:
+        if efficient:
+            return
+        await wait()
+
     async def __aenter__(self):
         return self
 

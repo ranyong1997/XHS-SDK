@@ -25,6 +25,7 @@ from .static import (
 from .tools import (
     retry,
     logging,
+    wait,
 )
 
 __all__ = [
@@ -52,4 +53,5 @@ __all__ = [
     "HEADERS",
     "retry",
     "logging",
+    "wait",
 ]
